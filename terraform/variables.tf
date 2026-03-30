@@ -28,10 +28,16 @@ variable "my_ip" {
   default     = "172.56.166.182"
 }
 
-variable "key_name" {
-  description = "Name of the AWS key pair for SSH access"
+variable "aws_profile" {
+  description = "AWS CLI profile to use"
   type        = string
-  default     = "manmohan"
+  default     = "default"
+}
+
+variable "ssh_public_key_path" {
+  description = "Path to your SSH public key"
+  type        = string
+  default     = "~/.ssh/id_ed25519_github.pub"
 }
 
 variable "custom_ami_id" {

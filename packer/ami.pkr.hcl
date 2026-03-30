@@ -17,10 +17,16 @@ variable "ssh_public_key" {
   default = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPzbeqDRFCar0cKeMCz7pp+FknFT+dmTv1NiB3JJMUTO manmohan659@gmail.com"
 }
 
+variable "aws_profile" {
+  type    = string
+  default = "account2"
+}
+
 source "amazon-ebs" "amazon_linux" {
   ami_name      = "custom-amazon-linux-docker-{{timestamp}}"
   instance_type = "t3.micro"
   region        = var.aws_region
+  profile       = var.aws_profile
 
   source_ami_filter {
     filters = {

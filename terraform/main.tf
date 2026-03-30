@@ -10,7 +10,14 @@ terraform {
 }
 
 provider "aws" {
-  region = var.aws_region
+  region  = var.aws_region
+  profile = var.aws_profile
+}
+
+# --- SSH Key Pair (created from local public key) ---
+resource "aws_key_pair" "deployer" {
+  key_name   = "hw8-deployer-key"
+  public_key = file(var.ssh_public_key_path)
 }
 
 # --- VPC ---
@@ -47,7 +54,7 @@ module "security_groups" {
 module "bastion" {
   source           = "./modules/bastion"
   instance_type    = var.bastion_instance_type
-  key_name         = var.key_name
+  key_name         = aws_key_pair.deployer.key_name
   public_subnet_id = module.subnets.public_subnet_ids[0]
   bastion_sg_id    = module.security_groups.bastion_sg_id
 }
@@ -58,7 +65,7 @@ module "ec2_private" {
   instance_count     = var.private_instance_count
   instance_type      = var.private_instance_type
   custom_ami_id      = var.custom_ami_id
-  key_name           = var.key_name
+  key_name           = aws_key_pair.deployer.key_name
   private_subnet_ids = module.subnets.private_subnet_ids
   private_sg_id      = module.security_groups.private_sg_id
 }
